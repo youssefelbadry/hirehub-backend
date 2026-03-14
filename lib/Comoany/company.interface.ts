@@ -4,7 +4,7 @@ export interface ICompany {
   companyName: string;
 
   description: string;
-
+  jobs: Types.ObjectId[];
   industry: string;
 
   address: string;

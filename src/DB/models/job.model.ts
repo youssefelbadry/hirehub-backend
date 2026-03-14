@@ -5,13 +5,14 @@ import {
   SchemaFactory,
   Virtual,
 } from "@nestjs/mongoose";
-import { Document, HydratedDocument, Types } from "mongoose";
+import mongoose, { Document, HydratedDocument, Types } from "mongoose";
 import { IJob } from "lib/Job/job.interface";
 import {
   jobLocation,
   seniorityLevel,
   workingTime,
 } from "src/common/enums/job,enum";
+import { Application } from "./application.model";
 
 export type HJobDocument = Job & Document;
 
@@ -86,3 +87,15 @@ export const JobModel = MongooseModule.forFeature([
     schema: JobSchema,
   },
 ]);
+
+JobSchema.virtual("applications", {
+  ref: "Application",
+  localField: "_id",
+  foreignField: "jobId",
+});
+
+JobSchema.pre("deleteOne", { document: false, query: true }, async function () {
+  const jobId = this.getFilter()._id;
+  const ApplicationModel = mongoose.model(Application.name);
+  await ApplicationModel.deleteMany({ jobId });
+});

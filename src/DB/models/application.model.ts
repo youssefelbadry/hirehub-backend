@@ -1,10 +1,4 @@
-import {
-  MongooseModule,
-  Prop,
-  Schema,
-  SchemaFactory,
-  Virtual,
-} from "@nestjs/mongoose";
+import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, HydratedDocument, Types } from "mongoose";
 
 import { IApplication } from "lib/Applications/app.interface";

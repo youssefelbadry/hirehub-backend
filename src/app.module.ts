@@ -6,6 +6,11 @@ import { resolve } from "node:path";
 import { MongooseModule } from "@nestjs/mongoose";
 import { Connection } from "mongoose";
 import { ChatsModule } from "./modules/chats/chats.module";
+import { UsersModule } from "./modules/users/users.module";
+import { JobsModule } from "./modules/jobs/jobs.module";
+import { AuthModule } from "./modules/auth/auth.module";
+import { ApplicationsModule } from "./modules/applications/applications.module";
+import { CompanyModule } from "./modules/company/company.module";
 
 @Module({
   imports: [
@@ -22,8 +27,12 @@ import { ChatsModule } from "./modules/chats/chats.module";
         return connection;
       },
     }),
-
+    UsersModule,
     ChatsModule,
+    JobsModule,
+    AuthModule,
+    ApplicationsModule,
+    CompanyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

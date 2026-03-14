@@ -6,9 +6,13 @@ import {
   Virtual,
 } from "@nestjs/mongoose";
 import { IUser } from "lib/Users/user.interface";
-import { Document, HydratedDocument, Mongoose, Types } from "mongoose";
+import mongoose, { Document, HydratedDocument, Types } from "mongoose";
 import { Gender, Provider, Role } from "src/common/enums/user.enum";
-import { HOtpDoc } from "./otp.model";
+import { HOtpDoc, Otp } from "./otp.model";
+import { hashPassword } from "src/common/utils/hash/hash.util";
+import { encrypt } from "src/common/utils/encrypt/encrypt.util";
+import { Application } from "./application.model";
+import { Chat } from "./chat.model";
 // import { AuthProvider, Gender, Role } from "src/common/enums/user.enum";
 
 // import { generateHash } from "src/common/utils/hash/hash.util";
@@ -141,6 +145,7 @@ export class User implements IUser {
     public_id: string;
   };
 
+  @Virtual()
   OTP: HOtpDoc[];
 }
 
@@ -152,11 +157,11 @@ export const UserModel = MongooseModule.forFeature([
     schema: UserSchema,
   },
 ]);
-// UserSchema.virtual("otp", {
-//   localField: "_id",
-//   foreignField: "createdBy",
-//   ref: Otp.name,
-// });
+UserSchema.virtual("otp", {
+  localField: "_id",
+  foreignField: "createdBy",
+  ref: Otp.name,
+});
 
 UserSchema.virtual("username")
   .set(function (value) {
@@ -167,8 +172,29 @@ UserSchema.virtual("username")
     return `${this.firstName} ${this.lastName}`;
   });
 
-// UserSchema.pre<HUserDoc>("save", async function (next) {
-//   if (this.isModified("password")) {
-//     this.password = await generateHash(this.password);
-//   }
-// });
+UserSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await hashPassword(this.password);
+    this.changeCredentialTime = new Date();
+  }
+  if (this.isModified("mobileNumber")) {
+    this.mobileNumber = await encrypt(this.mobileNumber);
+  }
+});
+
+UserSchema.pre(
+  "deleteOne",
+  { document: false, query: true },
+  async function () {
+    const userId = this.getFilter()._id;
+
+    const ApplicationModel = mongoose.model(Application.name);
+    const ChatModel = mongoose.model(Chat.name);
+
+    await ApplicationModel.deleteMany({ userId });
+
+    await ChatModel.deleteMany({
+      $or: [{ senderId: userId }, { receiverId: userId }],
+    });
+  },
+);
