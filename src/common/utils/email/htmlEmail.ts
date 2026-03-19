@@ -1,5 +1,5 @@
 export const template = (
-  code: number,
+  code: number | null,
   username: string,
   subject: string,
   expiresIn: string = "1 minute",
@@ -97,22 +97,33 @@ body{
 
 <div class="logo">HireHub</div>
 
+<!-- OTP FIRST -->
+${
+  code
+    ? `<div class="code-box">
+        <div class="code">${code}</div>
+      </div>`
+    : ""
+}
+
 <div class="title">
 Hello ${username}
 </div>
 
 <div class="subtitle">
-Use the verification code below to <strong>${subject}</strong> and continue using <span class="brand">HireHub</span>.
+${subject}
 </div>
 
-<div class="code-box">
-<div class="code">${code}</div>
-</div>
-
-<div class="note">
+${
+  code
+    ? `<div class="note">
 This code will expire in <strong>${expiresIn}</strong>.<br>
 If you didn’t request this action, you can safely ignore this email.
-</div>
+</div>`
+    : `<div class="note">
+If you didn’t request this action, you can safely ignore this email.
+</div>`
+}
 
 <div class="footer">
 © 2026 <span class="brand">HireHub</span> — Connecting talent with opportunity

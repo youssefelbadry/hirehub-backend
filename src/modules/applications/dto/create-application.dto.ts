@@ -1,7 +1,7 @@
 import { IsMongoId, IsObject, IsOptional, IsEnum } from "class-validator";
 import { applicationStatus } from "src/common/enums/app.enum";
 
-export class ApplyJobDto {
+export class CreateApplicationDto {
   @IsMongoId()
   jobId: string;
 

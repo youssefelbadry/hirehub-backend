@@ -36,9 +36,19 @@ emailEvents.on(EmailEventEnum.Welcome, async (data) => {
 emailEvents.on(EmailEventEnum.ChangePassword, async (data) => {
   try {
     data.subject = EmailSubjectEnum.ChangePassword;
-    data.html = template(null as any, data.firstName, data.subject);
+    data.html = template(data.otp, data.firstName, data.subject);
     await sendEmail(data);
   } catch (error) {
     console.error("Fail to send change password email", error);
+  }
+});
+
+emailEvents.on(EmailEventEnum.DeleteAccount, async (data) => {
+  try {
+    data.subject = EmailSubjectEnum.DeleteAccount;
+    data.html = template(data.otp, data.firstName, data.subject);
+    await sendEmail(data);
+  } catch (error) {
+    console.error("Fail to send delete account email", error);
   }
 });

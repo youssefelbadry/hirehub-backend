@@ -31,8 +31,8 @@ export class AuthGuard implements CanActivate {
 
       const user = await this._usermodel.findOne({
         filter: {
-          _id: payload.userId,
-          isActive: true,
+          id: payload.userId,
+          // isActive: true,
         },
         select: { password: 0 },
       });
@@ -52,7 +52,11 @@ export class AuthGuard implements CanActivate {
       request.user = user;
 
       return true;
-    } catch {
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw error;
+      }
+
       throw new UnauthorizedException("Invalid or expired token");
     }
   }

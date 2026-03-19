@@ -89,6 +89,10 @@ export class DataBaseRepository<T> {
     return this.model.deleteOne(filter);
   }
 
+  async deleteMany(filter: QueryFilter<T>) {
+    return this.model.deleteMany(filter);
+  }
+
   async findByIdAndDelete(id: string) {
     return this.model.findByIdAndDelete(id);
   }

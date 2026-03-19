@@ -3,6 +3,7 @@ export enum EmailSubjectEnum {
   ResetPassword = "Reset Password",
   Welcome = "Welcome",
   ChangePassword = "Change Password",
+  DeleteAccount = "Delete Account",
 }
 
 export enum EmailEventEnum {
@@ -10,4 +11,5 @@ export enum EmailEventEnum {
   ResetPassword = "reset-password",
   Welcome = "welcome",
   ChangePassword = "change-password",
+  DeleteAccount = "delete-account",
 }

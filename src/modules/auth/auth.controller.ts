@@ -1,34 +1,64 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { Controller, Post, Body, Patch } from "@nestjs/common";
+import { AuthService } from "./auth.service";
+import {
+  ChangePasswordDto,
+  ConfirmOtpDto,
+  CreateUserDto,
+  LoginDto,
+  RefreshTokenDto,
+  RequestChangePasswordDto,
+  ResetOtpDto,
+  ResetPasswordDto,
+} from "./dto/create-auth.dto";
 
-@Controller('auth')
+@Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post("signup")
+  create(@Body() createAuthDto: CreateUserDto) {
+    return this.authService.createUser(createAuthDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post("resend-otp")
+  resendVerification(@Body() resetOtpDto: ResetOtpDto) {
+    return this.authService.resetOtp(resetOtpDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Post("confirm-email")
+  confirmEmail(@Body() confirmOtpDto: ConfirmOtpDto) {
+    return this.authService.confirmEmail(confirmOtpDto);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  @Post("request-change-password")
+  requestChangePassword(
+    @Body() requestChangePassword: RequestChangePasswordDto,
+  ) {
+    return this.authService.requestChangePassword(requestChangePassword);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Patch("change-password")
+  changePassword(@Body() changePassword: ChangePasswordDto) {
+    return this.authService.changePassword(changePassword);
+  }
+
+  @Post("forget-password")
+  forgetPassword(@Body() forgetPassword: ResetOtpDto) {
+    return this.authService.forgetPassword(forgetPassword);
+  }
+
+  @Post("reset-password")
+  resetPassword(@Body() resetPassword: ResetPasswordDto) {
+    return this.authService.resetPassword(resetPassword);
+  }
+
+  @Post("login")
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
+  }
+
+  @Post("refresh-token")
+  refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshToken(refreshTokenDto);
   }
 }

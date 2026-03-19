@@ -20,7 +20,7 @@ export const sendEmail = async (data: Mail.Options) => {
 
   const info = await transport.sendMail({
     ...data,
-    from: `Rout Academy <${process.env.EMAIL}>`,
+    from: `HireHub <${process.env.EMAIL}>`,
   });
 
   console.log("Email sent : ", info.messageId);

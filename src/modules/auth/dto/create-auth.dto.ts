@@ -10,6 +10,7 @@ import {
   MinLength,
 } from "class-validator";
 import { Gender, Provider, Role } from "src/common/enums/user.enum";
+import { EmailEventEnum } from "src/common/utils/email/emailSubjectEnum";
 
 export class CreateUserDto {
   @IsString()
@@ -67,3 +68,82 @@ export class CreateUserDto {
   @IsOptional()
   updatedBy?: string;
 }
+
+export class ResetOtpDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsEnum(EmailEventEnum)
+  type: EmailEventEnum;
+}
+
+export class ConfirmOtpDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  otp: string;
+}
+
+export class RequestChangePasswordDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+}
+
+export class ChangePasswordDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  otp: string;
+
+  @IsString()
+  oldPassword: string;
+
+  @IsString()
+  newPassword: string;
+}
+
+export class ForgetPasswordDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+}
+
+export class ResetPasswordDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  otp: string;
+
+  @IsString()
+  password: string;
+}
+
+export class LoginDto {
+  @IsString()
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+}
+
+export class RefreshTokenDto {
+  @IsString()
+  refreshToken: string;
+}
+
+// export class SocialLoginDto {
+//   @IsString()
+//   provider: string;
+
+//   @IsString()
+//   accessToken: string;
+// }

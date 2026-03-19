@@ -44,7 +44,7 @@ export const OtpModel = MongooseModule.forFeature([
   },
 ]);
 
-OtpSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
+// OtpSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
 OtpSchema.pre<HOtpDoc>(
   "save",
   async function (this: HOtpDoc & { wasNew: boolean; plainOtp: string }) {
@@ -57,28 +57,18 @@ OtpSchema.pre<HOtpDoc>(
   },
 );
 
-OtpSchema.post<HOtpDoc>("save", async function (doc, next) {
+OtpSchema.post<HOtpDoc>("save", async function () {
   const that = this as HOtpDoc & { wasNew: boolean; plainOtp: string };
-  if (that.wasNew && that.plainOtp) {
-    let event: EmailEventEnum;
-    switch (that.type) {
-      case EmailEventEnum.ConfirmEmail:
-        event = EmailEventEnum.ConfirmEmail;
-        break;
-      case EmailEventEnum.ResetPassword:
-        event = EmailEventEnum.ResetPassword;
-        break;
-      case EmailEventEnum.Welcome:
-        event = EmailEventEnum.Welcome;
-        break;
-      case EmailEventEnum.ChangePassword:
-        event = EmailEventEnum.ChangePassword;
-        break;
-    }
-    emailEvents.emit(event, {
-      to: (that.createdBy as unknown as HUserDoc).email,
-      otp: that.plainOtp,
-      firstName: (that.createdBy as unknown as HUserDoc).firstName,
-    });
-  }
+
+  if (!that.wasNew || !that.plainOtp) return;
+
+  const user = that.createdBy as unknown as HUserDoc;
+
+  const event: EmailEventEnum = that.type;
+
+  emailEvents.emit(event, {
+    to: user.email,
+    otp: that.plainOtp,
+    firstName: user.firstName,
+  });
 });

@@ -10,20 +10,32 @@ import mongoose, { Document, HydratedDocument, Types } from "mongoose";
 import { Gender, Provider, Role } from "src/common/enums/user.enum";
 import { HOtpDoc, Otp } from "./otp.model";
 import { hashPassword } from "src/common/utils/hash/hash.util";
-import { encrypt } from "src/common/utils/encrypt/encrypt.util";
+import { decrypt, encrypt } from "src/common/utils/encrypt/encrypt.util";
 import { Application } from "./application.model";
 import { Chat } from "./chat.model";
-// import { AuthProvider, Gender, Role } from "src/common/enums/user.enum";
-
-// import { generateHash } from "src/common/utils/hash/hash.util";
-// import { HOtpDoc, Otp } from "./otp.model";
 
 export type UserDocument = User & Document;
 
 @Schema({
   timestamps: true,
-  toJSON: { virtuals: true },
-  toObject: { virtuals: true },
+  toJSON: {
+    virtuals: true,
+    transform: (_, ret: any) => {
+      ret.id = ret._id;
+      delete ret.id;
+      delete ret.__v;
+      return ret;
+    },
+  },
+  toObject: {
+    virtuals: true,
+    transform: (_, ret: any) => {
+      ret.id = ret._id;
+      delete ret.id;
+      delete ret.__v;
+      return ret;
+    },
+  },
 })
 export class User implements IUser {
   @Prop({
@@ -83,6 +95,11 @@ export class User implements IUser {
     required: true,
   })
   mobileNumber: string;
+
+  @Prop({
+    type: String,
+  })
+  mobileNumberHash: string;
 
   @Prop({
     type: String,
@@ -178,7 +195,19 @@ UserSchema.pre("save", async function (next) {
     this.changeCredentialTime = new Date();
   }
   if (this.isModified("mobileNumber")) {
-    this.mobileNumber = await encrypt(this.mobileNumber);
+    this.mobileNumber = encrypt(this.mobileNumber);
+    this.mobileNumberHash = await hashPassword(this.mobileNumber);
+  }
+  next;
+});
+
+UserSchema.post(["findOne", "find"], async function (doc) {
+  try {
+    if (doc) {
+      doc.mobileNumber = decrypt(doc.mobileNumber);
+    }
+  } catch (error) {
+    console.error("Error decrypting mobile number:", error);
   }
 });
 
