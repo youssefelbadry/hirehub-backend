@@ -82,7 +82,7 @@ export class CompanyService {
     const company = await this._companyModel.findOne({
       filter: {
         _id: companyId,
-        createdBy: userId,
+        createdBy: userId as any,
         deletedAt: { $exists: false },
       },
     });
@@ -107,7 +107,7 @@ export class CompanyService {
     const updatedCompany = await this._companyModel.findOneAndUpdate({
       filter: {
         _id: companyId,
-        createdBy: userId,
+        createdBy: userId as any,
         deletedAt: { $exists: false },
       },
       update: {
@@ -138,7 +138,7 @@ export class CompanyService {
     const company = await this._companyModel.findOne({
       filter: {
         _id: companyId,
-        createdBy: userId,
+        createdBy: userId as any,
         deletedAt: { $exists: false },
       },
     });
@@ -206,6 +206,8 @@ export class CompanyService {
     const updatedCompany = await this._companyModel.findOneAndUpdate({
       filter: {
         _id: companyId,
+        createdBy: userId as any,
+        deletedAt: { $exists: false },
       },
       update: updateCompanyDto,
       options: { new: true },
@@ -256,6 +258,8 @@ export class CompanyService {
     const updatedCompany = await this._companyModel.findOneAndUpdate({
       filter: {
         _id: companyId,
+        createdBy: userId as any,
+        deletedAt: { $exists: false },
       },
       update: {
         legalAttachment: {
@@ -304,6 +308,8 @@ export class CompanyService {
     const deletedCompany = await this._companyModel.findOneAndUpdate({
       filter: {
         _id: companyId,
+        createdBy: userId as any,
+        deletedAt: { $exists: false },
       },
       update: { deletedAt: new Date() },
       options: { new: true },
