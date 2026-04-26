@@ -20,7 +20,7 @@ import { AdminModule } from "./modules/admin/admin.module";
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: resolve("./config/dev.env"),
+      // envFilePath: resolve("./config/dev.env"),
       isGlobal: true,
     }),
     ScheduleModule.forRoot(),
