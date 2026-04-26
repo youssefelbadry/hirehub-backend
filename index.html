@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Socket Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  </head>
+  <body>
+    <h1>Chat Test</h1>
+
+    <button onclick="join()">Join Chat</button>
+    <button onclick="send()">Send Message</button>
+
+    <script>
+      const socket = io("http://localhost:3000/chats");
+
+      socket.on("connect", () => {
+        console.log("connected:", socket.id);
+      });
+
+      socket.on("connected", (data) => {
+        console.log("SERVER:", data);
+      });
+
+      socket.on("new_message", (data) => {
+        console.log("NEW MESSAGE:", data);
+      });
+      const userId = "69cf6733d9da430bf6021c08";
+      const applicationId = "69d6b11024efd0269910aa78";
+
+      function join() {
+        console.log("joining...");
+        socket.emit("join_chat", {
+          userId,
+          applicationId,
+        });
+      }
+
+      function send() {
+        console.log("sending...");
+        socket.emit("send_message", {
+          applicationId,
+          message: "Hello 🔥",
+        });
+      }
+    </script>
+  </body>
+</html>
